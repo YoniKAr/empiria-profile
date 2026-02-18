@@ -18,7 +18,7 @@ export default async function TicketsPage({
   searchParams: Promise<{ status?: string }>;
 }) {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/api/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login");
 
   const params = await searchParams;
   const tickets = await getUserTickets(session.user.sub);

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default async function DashboardOverview() {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/api/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login");
 
   const [user, tickets, orders] = await Promise.all([
     getUserByAuth0Id(session.user.sub),

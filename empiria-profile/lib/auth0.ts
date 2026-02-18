@@ -14,8 +14,8 @@ export const auth0 = new Auth0Client({
   },
 
   routes: {
-    callback: "/api/auth/callback",
-    login: "/api/auth/login",
-    logout: "/api/auth/logout",
+    callback: "/auth/callback",
+    login: "/auth/login",
+    logout: "/auth/logout",
   },
 });

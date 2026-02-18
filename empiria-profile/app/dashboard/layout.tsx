@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/api/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login");
 
   const user = await getUserByAuth0Id(session.user.sub);
   if (!user) redirect("https://empiriaindia.com");

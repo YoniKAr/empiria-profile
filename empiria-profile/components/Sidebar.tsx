@@ -91,7 +91,7 @@ export default function Sidebar({ userName, avatarUrl, initials }: SidebarProps)
           Browse Events
         </a>
         <a
-          href="/api/auth/logout"
+          href="/auth/logout"
           className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50"
         >
           <LogOut className="h-5 w-5" />

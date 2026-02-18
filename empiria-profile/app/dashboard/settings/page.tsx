@@ -5,7 +5,7 @@ import ProfileForm from "./ProfileForm";
 
 export default async function SettingsPage() {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/api/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login");
 
   const user = await getUserByAuth0Id(session.user.sub);
   if (!user) redirect("https://empiriaindia.com");
