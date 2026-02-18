@@ -3,8 +3,8 @@ import type { Database } from "./database.types";
 
 export function getSupabaseAdmin() {
   return createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_KEY!,
     { auth: { persistSession: false } }
   );
 }
@@ -12,8 +12,8 @@ export function getSupabaseAdmin() {
 /** Untyped client for mutations (until database.types.ts has Insert/Update types) */
 export function getSupabaseAdminUntyped() {
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_KEY!,
     { auth: { persistSession: false } }
   );
 }
