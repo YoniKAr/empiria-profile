@@ -24,7 +24,7 @@ interface SidebarProps {
   userName: string;
   avatarUrl: string | null;
   initials: string;
-} //
+}
 
 export default function Sidebar({ userName, avatarUrl, initials }: SidebarProps) {
   const pathname = usePathname();
@@ -69,8 +69,8 @@ export default function Sidebar({ userName, avatarUrl, initials }: SidebarProps)
               key={item.href}
               href={item.href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${isActive
-                  ? "bg-indigo-50 font-medium text-indigo-700"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                ? "bg-indigo-50 font-medium text-indigo-700"
+                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
             >
               <item.icon className="h-5 w-5 shrink-0" />
