@@ -196,14 +196,12 @@ export default function ProfileForm({ user }: { user: User }) {
           <button
             type="button"
             onClick={() => setNotifications(!notifications)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              notifications ? "bg-indigo-600" : "bg-gray-300"
-            }`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${notifications ? "bg-indigo-600" : "bg-gray-300"
+              }`}
           >
             <span
-              className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
-                notifications ? "translate-x-6" : "translate-x-1"
-              }`}
+              className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${notifications ? "translate-x-6" : "translate-x-1"
+                }`}
             />
           </button>
         </div>
@@ -231,9 +229,8 @@ export default function ProfileForm({ user }: { user: User }) {
         </button>
         {message && (
           <p
-            className={`text-sm ${
-              message.includes("success") ? "text-emerald-600" : "text-red-600"
-            }`}
+            className={`text-sm ${message.includes("success") ? "text-emerald-600" : "text-red-600"
+              }`}
           >
             {message}
           </p>
