@@ -12,7 +12,7 @@ async function getAuth0Id(): Promise<string> {
   if (!session?.user?.sub) throw new Error("Not authenticated");
   return session.user.sub;
 }
-
+//
 /**
  * Update the user's basic profile info.
  */
