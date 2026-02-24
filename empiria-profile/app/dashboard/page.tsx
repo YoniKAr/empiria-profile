@@ -15,7 +15,7 @@ export default async function DashboardOverview() {
     getUserOrders(session.user.sub),
   ]);
 
-  if (!user) redirect("https://empiriaindia.com");
+  if (!user) redirect("/dashboard/settings");
 
   const activeTickets = tickets.filter((t: any) => t.status === "valid");
   const upcomingTickets = activeTickets.filter(

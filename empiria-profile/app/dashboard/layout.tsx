@@ -54,7 +54,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!session?.user?.sub) redirect("/auth/login");
 
   const user = await getUserByAuth0Id(session.user.sub);
-  if (!user) redirect("https://empiriaindia.com");
+  if (!user) redirect(process.env.APP_BASE_URL ?? "https://empiriaindia.com");
 
   // Role gate — only attendees belong here
   if (user.role === "organizer" || user.role === "non_profit") {

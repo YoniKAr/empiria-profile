@@ -5,17 +5,17 @@ export const auth0 = new Auth0Client({
   clientId: process.env.AUTH0_CLIENT_ID!,
   clientSecret: process.env.AUTH0_CLIENT_SECRET!,
   secret: process.env.AUTH0_SECRET!,
-  appBaseUrl: process.env.APP_BASE_URL!,
+  appBaseUrl: process.env.AUTH0_BASE_URL || process.env.APP_BASE_URL!,
+
+  signInReturnToPath: "/dashboard",
 
   session: {
     cookie: {
-      domain: process.env.AUTH0_COOKIE_DOMAIN, // '.empiriaindia.com'
+      // Only set cookie domain in production — on localhost it MUST be omitted
+      ...(process.env.AUTH0_COOKIE_DOMAIN && !process.env.AUTH0_BASE_URL?.includes('localhost')
+        ? { domain: process.env.AUTH0_COOKIE_DOMAIN }
+        : {}),
     },
   },
 
-  routes: {
-    callback: "/auth/callback",
-    login: "/auth/login",
-    logout: "/auth/logout",
-  },
 });
