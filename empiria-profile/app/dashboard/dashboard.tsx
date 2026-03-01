@@ -12,9 +12,10 @@ import { DashboardFooter } from "@/components/dashboard-footer";
 interface DashboardPageProps {
     userName: string;
     avatarUrl: string | null;
+    tickets: any[];
 }
 
-export default function DashboardPage({ userName, avatarUrl }: DashboardPageProps) {
+export default function DashboardPage({ userName, avatarUrl, tickets }: DashboardPageProps) {
     const [searchQuery, setSearchQuery] = useState("");
 
     return (
@@ -39,7 +40,7 @@ export default function DashboardPage({ userName, avatarUrl }: DashboardPageProp
                 </div>
 
                 <StatCards />
-                <ScheduleSection searchQuery={searchQuery} />
+                <ScheduleSection searchQuery={searchQuery} tickets={tickets} />
                 <CuratedSection searchQuery={searchQuery} />
             </main>
 

@@ -21,7 +21,9 @@ interface SearchItem {
 const searchItems: SearchItem[] = [
     { label: "Profile Settings", description: "Navigate to Profile", href: "/dashboard/settings", icon: <User className="size-4" />, category: "page" },
     { label: "Dashboard", description: "Navigate to Dashboard", href: "/dashboard", icon: <LayoutDashboard className="size-4" />, category: "page" },
-    { label: "My Bookings", description: "Navigate to My Bookings", href: "/dashboard", icon: <Calendar className="size-4" />, category: "page" },
+    { label: "My Bookings", description: "View your tickets", href: "/dashboard", icon: <Calendar className="size-4" />, category: "page" },
+    { label: "Event History", description: "Your past events", href: "/dashboard/history", icon: <Calendar className="size-4" />, category: "page" },
+    { label: "Help & Support", description: "Get assistance", href: "/dashboard/help", icon: <LayoutDashboard className="size-4" />, category: "page" },
     { label: "Innovate Tech Summit 2023", description: "Grand Convention Center, NY", href: "/dashboard", icon: <MapPin className="size-4" />, category: "event" },
     { label: "Symphony Under Stars", description: "Central Park Amphitheater", href: "/dashboard", icon: <MapPin className="size-4" />, category: "event" },
     { label: "Digital Marketing Masterclass", description: "Online (Zoom)", href: "/dashboard", icon: <MapPin className="size-4" />, category: "event" },
@@ -146,10 +148,10 @@ export function DashboardNavbar({ searchQuery, onSearchChange, avatarUrl }: Dash
                     <Link href="https://shop.empiriaindia.com/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                         Discover
                     </Link>
-                    <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href="/dashboard/history" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                         History
                     </Link>
-                    <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href="/dashboard/help" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                         Help
                     </Link>
                 </nav>
