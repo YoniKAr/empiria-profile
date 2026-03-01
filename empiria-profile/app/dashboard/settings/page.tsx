@@ -17,9 +17,16 @@ export default async function SettingsPage() {
     <div className="flex min-h-screen bg-card">
       <SettingsSidebar />
       <div className="flex-1 p-8 lg:p-12 overflow-y-auto">
-        <h1 className="text-3xl font-bold text-foreground">Profile &amp; Settings</h1>
-        <p className="mt-2 text-muted-foreground mb-8">Manage your personal information and preferences.</p>
+        {/* Section header */}
+        <div className="mb-8">
+          <h1 className="text-base font-semibold text-empiria-orange mb-2">Profile Details</h1>
+          <div className="flex h-px">
+            <div className="w-24 bg-empiria-orange" />
+            <div className="flex-1 bg-border" />
+          </div>
+        </div>
         <ProfileForm user={user} isGoogleUser={isGoogleUser} />
+
       </div>
     </div>
   );
