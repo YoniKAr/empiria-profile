@@ -14,6 +14,8 @@ export default async function Page() {
         ? user.full_name.split(" ")[0]
         : user.email?.split("@")[0] ?? "there";
 
-    return <DashboardPage userName={firstName} />;
+    const avatarUrl = user.avatar_url ?? null;
+
+    return <DashboardPage userName={firstName} avatarUrl={avatarUrl} />;
 }
 

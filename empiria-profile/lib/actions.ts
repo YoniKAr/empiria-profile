@@ -62,6 +62,43 @@ export async function changePassword() {
 }
 
 /**
+ * Upload a new avatar image to Supabase Storage and update the user's record.
+ */
+export async function uploadAvatar(formData: FormData) {
+  const auth0Id = await getAuth0Id();
+  const supabase = getSupabaseAdminUntyped();
+
+  const file = formData.get("avatar") as File;
+  if (!file || file.size === 0) throw new Error("No file provided.");
+
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `${auth0Id.replace("|", "-")}/avatar.${ext}`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, arrayBuffer, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+  const publicUrl = urlData.publicUrl;
+
+  const { error: dbError } = await supabase
+    .from("users")
+    .update({ avatar_url: publicUrl, updated_at: new Date().toISOString() })
+    .eq("auth0_id", auth0Id);
+
+  if (dbError) throw new Error(dbError.message);
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+}
+
+/**
  * Update the user's avatar URL.
  */
 export async function updateAvatar(avatarUrl: string) {

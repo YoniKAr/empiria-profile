@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import Image from "next/image";
-import { updateProfile, changePassword } from "@/lib/actions";
+import { updateProfile, changePassword, uploadAvatar } from "@/lib/actions";
 import type { Database } from "@/lib/database.types";
 
 type UserRow = Database["public"]["Tables"]["users"]["Row"];
@@ -15,8 +15,35 @@ interface ProfileFormProps {
 export default function ProfileForm({ user, isGoogleUser }: ProfileFormProps) {
     const [isPending, startTransition] = useTransition();
     const [pwPending, startPwTransition] = useTransition();
+    const [avatarPending, startAvatarTransition] = useTransition();
+
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
     const [pwMessage, setPwMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+    const [avatarMessage, setAvatarMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+    // Local preview of the selected avatar before upload
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar_url ?? null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setAvatarPreview(URL.createObjectURL(file));
+    }
+
+    async function handleAvatarUpload(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        setAvatarMessage(null);
+        startAvatarTransition(async () => {
+            try {
+                await uploadAvatar(formData);
+                setAvatarMessage({ type: "success", text: "Profile picture updated!" });
+            } catch (err) {
+                setAvatarMessage({ type: "error", text: err instanceof Error ? err.message : "Upload failed." });
+            }
+        });
+    }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -46,27 +73,82 @@ export default function ProfileForm({ user, isGoogleUser }: ProfileFormProps) {
 
     return (
         <div className="max-w-2xl space-y-10">
-            {/* Profile Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Avatar */}
+
+            {/* Avatar Upload */}
+            <form onSubmit={handleAvatarUpload} className="space-y-4">
+                <h2 className="text-base font-semibold text-foreground">Profile Picture</h2>
                 <div className="flex items-center gap-5">
-                    {user.avatar_url ? (
-                        <Image
-                            src={user.avatar_url}
-                            alt={user.full_name ?? "Avatar"}
-                            width={80}
-                            height={80}
-                            className="rounded-full object-cover"
-                        />
-                    ) : (
-                        <div className="flex size-20 items-center justify-center rounded-full bg-muted text-xl font-bold text-muted-foreground uppercase">
-                            {user.full_name?.charAt(0) ?? user.email.charAt(0)}
+                    {/* Preview */}
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="relative group shrink-0"
+                        title="Click to change photo"
+                    >
+                        {avatarPreview ? (
+                            <Image
+                                src={avatarPreview}
+                                alt="Profile"
+                                width={80}
+                                height={80}
+                                className="rounded-full object-cover size-20"
+                                unoptimized
+                            />
+                        ) : (
+                            <div className="flex size-20 items-center justify-center rounded-full bg-muted text-xl font-bold text-muted-foreground uppercase">
+                                {user.full_name?.charAt(0) ?? user.email.charAt(0)}
+                            </div>
+                        )}
+                        {/* Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-[10px] font-semibold text-white leading-tight text-center">Change<br />Photo</span>
                         </div>
-                    )}
-                    <div>
-                        <p className="text-sm font-semibold text-foreground">{user.email}</p>
-                        <p className="text-xs text-muted-foreground">Avatar is managed via your login provider.</p>
+                    </button>
+
+                    <div className="space-y-2">
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            name="avatar"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="hidden"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="rounded-full border border-border px-4 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+                        >
+                            Choose Photo
+                        </button>
+                        <p className="text-xs text-muted-foreground">JPG, PNG or WebP. Max 5MB.</p>
                     </div>
+                </div>
+
+                {avatarMessage && (
+                    <p className={`text-sm font-medium ${avatarMessage.type === "success" ? "text-empiria-green" : "text-red-500"}`}>
+                        {avatarMessage.text}
+                    </p>
+                )}
+
+                <button
+                    type="submit"
+                    disabled={avatarPending}
+                    className="rounded-full bg-empiria-orange px-5 py-1.5 text-sm font-semibold text-white hover:bg-empiria-orange/90 transition-colors disabled:opacity-60"
+                >
+                    {avatarPending ? "Uploading…" : "Upload Photo"}
+                </button>
+            </form>
+
+            <hr className="border-border" />
+
+            {/* Profile Info Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <h2 className="text-base font-semibold text-foreground">Personal Information</h2>
+
+                {/* Email below avatar for reference */}
+                <div className="text-sm text-muted-foreground">
+                    Signed in as <span className="font-medium text-foreground">{user.email}</span>
                 </div>
 
                 {/* Full Name — editable */}
@@ -107,7 +189,6 @@ export default function ProfileForm({ user, isGoogleUser }: ProfileFormProps) {
                     </p>
                 )}
 
-                {/* Submit */}
                 <button
                     type="submit"
                     disabled={isPending}
@@ -117,9 +198,11 @@ export default function ProfileForm({ user, isGoogleUser }: ProfileFormProps) {
                 </button>
             </form>
 
+            <hr className="border-border" />
+
             {/* Password Change — only for non-Google users */}
-            {!isGoogleUser && (
-                <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+            {!isGoogleUser ? (
+                <div className="space-y-3">
                     <h2 className="text-base font-semibold text-foreground">Change Password</h2>
                     <p className="text-sm text-muted-foreground">
                         We&apos;ll send a password reset link to <span className="font-medium text-foreground">{user.email}</span>.
@@ -140,13 +223,10 @@ export default function ProfileForm({ user, isGoogleUser }: ProfileFormProps) {
                         {pwPending ? "Sending…" : "Send Password Reset Email"}
                     </button>
                 </div>
-            )}
-
-            {/* Google users — informational note */}
-            {isGoogleUser && (
-                <div className="rounded-xl border border-border bg-card p-6">
+            ) : (
+                <div className="space-y-1">
                     <h2 className="text-base font-semibold text-foreground">Password</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                         You signed in with Google. Your password is managed by Google and cannot be changed here.
                     </p>
                 </div>

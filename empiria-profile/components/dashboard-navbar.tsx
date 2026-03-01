@@ -52,9 +52,10 @@ function highlightMatch(text: string, query: string) {
 interface DashboardNavbarProps {
     searchQuery: string;
     onSearchChange: (query: string) => void;
+    avatarUrl: string | null;
 }
 
-export function DashboardNavbar({ searchQuery, onSearchChange }: DashboardNavbarProps) {
+export function DashboardNavbar({ searchQuery, onSearchChange, avatarUrl }: DashboardNavbarProps) {
     const router = useRouter();
     const [searchOpen, setSearchOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
@@ -254,8 +255,8 @@ export function DashboardNavbar({ searchQuery, onSearchChange }: DashboardNavbar
                 </Button>
                 <Link href="/dashboard/settings">
                     <Avatar className="size-9 cursor-pointer ring-2 ring-border">
-                        <AvatarImage src="/images/avatar.jpg" alt="Alex Mitchell" />
-                        <AvatarFallback>AM</AvatarFallback>
+                        {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
+                        <AvatarFallback>Me</AvatarFallback>
                     </Avatar>
                 </Link>
             </div>

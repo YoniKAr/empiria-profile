@@ -11,14 +11,15 @@ import { DashboardFooter } from "@/components/dashboard-footer";
 
 interface DashboardPageProps {
     userName: string;
+    avatarUrl: string | null;
 }
 
-export default function DashboardPage({ userName }: DashboardPageProps) {
+export default function DashboardPage({ userName, avatarUrl }: DashboardPageProps) {
     const [searchQuery, setSearchQuery] = useState("");
 
     return (
         <div className="min-h-screen bg-card">
-            <DashboardNavbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+            <DashboardNavbar searchQuery={searchQuery} onSearchChange={setSearchQuery} avatarUrl={avatarUrl} />
 
             <main className="px-8 py-8 space-y-10 max-w-7xl mx-auto">
                 {/* Welcome Header */}
