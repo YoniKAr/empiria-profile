@@ -143,7 +143,7 @@ export function DashboardNavbar({ searchQuery, onSearchChange, avatarUrl }: Dash
                     >
                         My Bookings
                     </Link>
-                    <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href="https://shop.empiriaindia.com/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                         Discover
                     </Link>
                     <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
