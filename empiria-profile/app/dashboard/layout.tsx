@@ -78,19 +78,5 @@ export default async function DashboardLayout({ children }: { children: React.Re
     );
   }
 
-  const userName = user.full_name || user.email;
-  const initials = getInitials(userName);
-
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar
-        userName={userName}
-        avatarUrl={user.avatar_url}
-        initials={initials}
-      />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-5xl px-6 py-8">{children}</div>
-      </main>
-    </div>
-  );
+  return <>{children}</>;
 }
