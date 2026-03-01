@@ -9,7 +9,11 @@ import { ScheduleSection } from "@/components/schedule-section";
 import { CuratedSection } from "@/components/curated-section";
 import { DashboardFooter } from "@/components/dashboard-footer";
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+    userName: string;
+}
+
+export default function DashboardPage({ userName }: DashboardPageProps) {
     const [searchQuery, setSearchQuery] = useState("");
 
     return (
@@ -21,7 +25,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-wide text-empiria-orange">
-                            Welcome back, Alex
+                            Welcome back, {userName}
                         </p>
                         <h1 className="text-3xl font-bold text-foreground text-balance">
                             Your Upcoming Experiences

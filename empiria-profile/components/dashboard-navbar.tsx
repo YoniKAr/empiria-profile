@@ -19,7 +19,7 @@ interface SearchItem {
 }
 
 const searchItems: SearchItem[] = [
-    { label: "Profile Settings", description: "Navigate to Profile", href: "/settings", icon: <User className="size-4" />, category: "page" },
+    { label: "Profile Settings", description: "Navigate to Profile", href: "/dashboard/settings", icon: <User className="size-4" />, category: "page" },
     { label: "Dashboard", description: "Navigate to Dashboard", href: "/dashboard", icon: <LayoutDashboard className="size-4" />, category: "page" },
     { label: "My Bookings", description: "Navigate to My Bookings", href: "/dashboard", icon: <Calendar className="size-4" />, category: "page" },
     { label: "Innovate Tech Summit 2023", description: "Grand Convention Center, NY", href: "/dashboard", icon: <MapPin className="size-4" />, category: "event" },
@@ -252,7 +252,7 @@ export function DashboardNavbar({ searchQuery, onSearchChange }: DashboardNavbar
                     <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-empiria-orange" />
                     <span className="sr-only">Notifications</span>
                 </Button>
-                <Link href="/settings">
+                <Link href="/dashboard/settings">
                     <Avatar className="size-9 cursor-pointer ring-2 ring-border">
                         <AvatarImage src="/images/avatar.jpg" alt="Alex Mitchell" />
                         <AvatarFallback>AM</AvatarFallback>
