@@ -12,28 +12,53 @@ async function getAuth0Id(): Promise<string> {
   if (!session?.user?.sub) throw new Error("Not authenticated");
   return session.user.sub;
 }
-//
+
 /**
- * Update the user's basic profile info.
+ * Update the user's basic profile info (name only).
  */
 export async function updateProfile(formData: FormData) {
   const auth0Id = await getAuth0Id();
   const supabase = getSupabaseAdminUntyped();
 
   const full_name = formData.get("full_name") as string;
-  const phone = formData.get("phone") as string;
-  const interestsRaw = formData.get("interests") as string;
-  const interests = interestsRaw
-    ? interestsRaw.split(",").map((i) => i.trim()).filter(Boolean)
-    : [];
 
   const { error } = await supabase
     .from("users")
-    .update({ full_name, phone, interests, updated_at: new Date().toISOString() })
+    .update({ full_name, updated_at: new Date().toISOString() })
     .eq("auth0_id", auth0Id);
 
   if (error) throw new Error(error.message);
   revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+}
+
+/**
+ * Send a password-change email via Auth0 (only for email/password users).
+ */
+export async function changePassword() {
+  const session = await auth0.getSession();
+  if (!session?.user?.sub) throw new Error("Not authenticated");
+
+  const email = session.user.email;
+  if (!email) throw new Error("No email found in session.");
+
+  const domain = process.env.AUTH0_ISSUER_BASE_URL!.replace(/^https?:\/\//, "");
+  const clientId = process.env.AUTH0_CLIENT_ID!;
+
+  const res = await fetch(`https://${domain}/dbconnections/change_password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: clientId,
+      email,
+      connection: "Username-Password-Authentication",
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Failed to send password reset email.");
+  }
 }
 
 /**

@@ -11,13 +11,15 @@ export default async function SettingsPage() {
   const user = await getUserByAuth0Id(session.user.sub);
   if (!user) redirect(process.env.APP_BASE_URL ?? "https://empiriaindia.com");
 
+  const isGoogleUser = session.user.sub.startsWith("google-oauth2|");
+
   return (
     <div className="flex min-h-screen bg-card">
       <SettingsSidebar />
       <div className="flex-1 p-8 lg:p-12 overflow-y-auto">
-        <h1 className="text-3xl font-bold text-foreground">Profile & Settings</h1>
+        <h1 className="text-3xl font-bold text-foreground">Profile &amp; Settings</h1>
         <p className="mt-2 text-muted-foreground mb-8">Manage your personal information and preferences.</p>
-        <ProfileForm user={user} />
+        <ProfileForm user={user} isGoogleUser={isGoogleUser} />
       </div>
     </div>
   );
