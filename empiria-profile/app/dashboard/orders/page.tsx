@@ -13,7 +13,7 @@ const statusStyles: Record<string, string> = {
 
 export default async function OrdersPage() {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
   const orders = await getUserOrders(session.user.sub);
 

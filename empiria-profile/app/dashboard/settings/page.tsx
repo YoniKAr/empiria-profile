@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 export default async function SettingsPage() {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
   const user = await getUserByAuth0Id(session.user.sub);
   if (!user) redirect(process.env.APP_BASE_URL ?? "https://empiriaindia.com");

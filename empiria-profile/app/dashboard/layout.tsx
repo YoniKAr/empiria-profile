@@ -51,7 +51,7 @@ function RoleGateScreen({
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth0.getSession();
-  if (!session?.user?.sub) redirect("/auth/login");
+  if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
   const user = await getUserByAuth0Id(session.user.sub);
   if (!user) redirect(process.env.APP_BASE_URL ?? "https://empiriaindia.com");

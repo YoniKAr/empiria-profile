@@ -3,9 +3,9 @@ import { getUserByAuth0Id, getUserTickets } from "@/lib/data";
 import { redirect } from "next/navigation";
 import DashboardPage from "./dashboard";
 
-export default async function Page() {
+export default async function DashboardOverview() {
     const session = await auth0.getSession();
-    if (!session?.user?.sub) redirect("/auth/login");
+    if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
     const user = await getUserByAuth0Id(session.user.sub);
     if (!user) redirect("/dashboard/settings");
