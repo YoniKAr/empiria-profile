@@ -42,8 +42,8 @@ export type Database = {
           tags: string[] | null;
           cover_image_url: string | null;
           gallery_images: string[] | null;
-          start_at: string;
-          end_at: string;
+          sales_start_at: string | null;
+          sales_end_at: string | null;
           location_type: string;
           venue_name: string | null;
           address_text: string | null;
@@ -93,7 +93,20 @@ export type Database = {
           qr_code_secret: string;
           status: "valid" | "used" | "cancelled" | "expired";
           seat_label: string | null;
+          occurrence_id: string | null;
           purchase_date: string;
+        };
+      };
+      event_occurrences: {
+        Row: {
+          id: string;
+          event_id: string;
+          starts_at: string;
+          ends_at: string;
+          label: string | null;
+          is_cancelled: boolean;
+          created_at: string;
+          updated_at: string;
         };
       };
       orders: {

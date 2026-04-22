@@ -13,10 +13,11 @@ const statusStyles: Record<string, { bg: string; label: string }> = {
 };
 
 function isUpcoming(ticket: any): boolean {
-  if (!ticket.event) return false;
+  const occ = ticket.occurrence;
+  if (!occ) return false;
   const now = new Date();
-  if (ticket.event.end_at) return new Date(ticket.event.end_at) > now;
-  if (ticket.event.start_at) return new Date(ticket.event.start_at) > now;
+  if (occ.ends_at) return new Date(occ.ends_at) > now;
+  if (occ.starts_at) return new Date(occ.starts_at) > now;
   return false;
 }
 
@@ -135,7 +136,7 @@ function TicketCard({
             {event?.title ?? "Unknown Event"}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {event?.start_at ? formatDate(event.start_at) : "TBA"}
+            {ticket.occurrence?.starts_at ? formatDate(ticket.occurrence.starts_at) : "TBA"}
           </p>
           {event?.venue_name && (
             <p className="mt-0.5 flex items-center gap-1 text-sm text-gray-400">

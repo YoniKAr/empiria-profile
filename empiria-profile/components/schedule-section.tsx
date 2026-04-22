@@ -14,11 +14,14 @@ interface Ticket {
         id: string;
         title: string;
         cover_image_url?: string | null;
-        start_at?: string | null;
-        end_at?: string | null;
         venue_name?: string | null;
         city?: string | null;
         location_type?: string | null;
+    } | null;
+    occurrence?: {
+        starts_at?: string | null;
+        ends_at?: string | null;
+        label?: string | null;
     } | null;
     tier?: {
         name: string;
@@ -48,8 +51,8 @@ export function ScheduleSection({ searchQuery, tickets }: ScheduleSectionProps) 
     const query = searchQuery.toLowerCase();
 
     const upcoming = tickets.filter((t) => {
-        if (!t.event?.start_at) return false;
-        return new Date(t.event.start_at) >= new Date();
+        if (!t.occurrence?.starts_at) return false;
+        return new Date(t.occurrence.starts_at) >= new Date();
     });
 
     const filtered = upcoming.filter((t) => {
@@ -82,11 +85,11 @@ export function ScheduleSection({ searchQuery, tickets }: ScheduleSectionProps) 
 
     const [featured, ...smaller] = filtered;
 
-    const featuredDate = featured.event?.start_at ? formatMonthDay(featured.event.start_at) : null;
+    const featuredDate = featured.occurrence?.starts_at ? formatMonthDay(featured.occurrence.starts_at) : null;
     const featuredLocation = featured.event?.location_type === "online"
         ? "Online"
         : [featured.event?.venue_name, featured.event?.city].filter(Boolean).join(", ");
-    const featuredTime = featured.event?.start_at ? formatTime(featured.event.start_at) : null;
+    const featuredTime = featured.occurrence?.starts_at ? formatTime(featured.occurrence.starts_at) : null;
 
     return (
         <section>
@@ -173,11 +176,11 @@ export function ScheduleSection({ searchQuery, tickets }: ScheduleSectionProps) 
             {smaller.length > 0 && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {smaller.map((ticket) => {
-                        const date = ticket.event?.start_at ? formatMonthDay(ticket.event.start_at) : null;
+                        const date = ticket.occurrence?.starts_at ? formatMonthDay(ticket.occurrence.starts_at) : null;
                         const location = ticket.event?.location_type === "online"
                             ? "Online"
                             : [ticket.event?.venue_name, ticket.event?.city].filter(Boolean).join(", ");
-                        const time = ticket.event?.start_at ? formatTime(ticket.event.start_at) : null;
+                        const time = ticket.occurrence?.starts_at ? formatTime(ticket.occurrence.starts_at) : null;
 
                         return (
                             <div key={ticket.id} className="overflow-hidden rounded-xl border border-border bg-card">

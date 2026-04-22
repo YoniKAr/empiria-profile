@@ -88,10 +88,12 @@ export default async function OrdersPage() {
               {/* Event date & venue */}
               {order.event && (
                 <div className="mt-3 flex items-center gap-3 text-xs text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {formatDate(order.event.start_at)}
-                  </span>
+                  {order.event.occurrences?.[0]?.starts_at && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-3.5 w-3.5" />
+                      {formatDate(order.event.occurrences[0].starts_at)}
+                    </span>
+                  )}
                   {order.event.city && <span>· {order.event.city}</span>}
                 </div>
               )}

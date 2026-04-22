@@ -29,8 +29,11 @@ export async function getUserTickets(auth0Id: string) {
     .select(`
       *,
       event:events!tickets_event_id_fkey (
-        id, title, slug, cover_image_url, start_at, end_at,
+        id, title, slug, cover_image_url,
         venue_name, address_text, city, status, location_type, currency
+      ),
+      occurrence:event_occurrences!tickets_occurrence_id_fkey (
+        id, starts_at, ends_at, label
       ),
       tier:ticket_tiers!tickets_tier_id_fkey (
         id, name, price, currency
@@ -56,8 +59,9 @@ export async function getUserOrders(auth0Id: string) {
     .select(`
       *,
       event:events!orders_event_id_fkey (
-        id, title, slug, cover_image_url, start_at, end_at,
-        venue_name, city, currency
+        id, title, slug, cover_image_url,
+        venue_name, city, currency,
+        occurrences:event_occurrences (starts_at, ends_at)
       ),
       order_items (
         id, tier_id, quantity, unit_price, subtotal,

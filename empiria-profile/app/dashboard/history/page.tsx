@@ -26,7 +26,7 @@ export default async function HistoryPage() {
 
     // Past events only
     const past = tickets.filter((t: any) =>
-        t.event?.start_at && new Date(t.event.start_at) < new Date()
+        t.occurrence?.starts_at && new Date(t.occurrence.starts_at) < new Date()
     );
 
     return (
@@ -89,16 +89,16 @@ export default async function HistoryPage() {
                                     <div className="flex-1 min-w-0">
                                         <p className="font-semibold text-foreground truncate">{ticket.event?.title}</p>
                                         <div className="flex flex-wrap gap-x-4 mt-1 text-xs text-muted-foreground">
-                                            {ticket.event?.start_at && (
+                                            {ticket.occurrence?.starts_at && (
                                                 <span className="flex items-center gap-1">
                                                     <Calendar className="size-3 text-empiria-orange" />
-                                                    {formatDate(ticket.event.start_at)}
+                                                    {formatDate(ticket.occurrence.starts_at)}
                                                 </span>
                                             )}
-                                            {ticket.event?.start_at && (
+                                            {ticket.occurrence?.starts_at && (
                                                 <span className="flex items-center gap-1">
                                                     <Clock className="size-3 text-empiria-orange" />
-                                                    {formatTime(ticket.event.start_at)}
+                                                    {formatTime(ticket.occurrence.starts_at)}
                                                 </span>
                                             )}
                                             {location && (

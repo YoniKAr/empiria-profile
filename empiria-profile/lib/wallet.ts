@@ -14,8 +14,8 @@ interface TicketData {
 interface EventData {
   id: string;
   title: string;
-  start_at: string;
-  end_at?: string | null;
+  starts_at: string;
+  ends_at?: string | null;
   venue_name?: string | null;
   city?: string | null;
 }
@@ -57,7 +57,7 @@ export async function generateApplePass(
       readFile(path.join(walletDir, 'strip@2x.png')),
     ]);
 
-    const eventDate = new Date(event.start_at);
+    const eventDate = new Date(event.starts_at);
     const dateStr = eventDate.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
@@ -185,7 +185,7 @@ export async function generateGoogleWalletLink(
       Buffer.from(keyBase64, 'base64').toString('utf8'),
     );
 
-    const eventDate = new Date(event.start_at);
+    const eventDate = new Date(event.starts_at);
     const venue = [event.venue_name, event.city].filter(Boolean).join(', ');
     const objectSuffix = `${issuerId}.ticket-${ticket.id}`;
 
@@ -212,7 +212,7 @@ export async function generateGoogleWalletLink(
       },
       dateTime: {
         start: eventDate.toISOString(),
-        ...(event.end_at ? { end: new Date(event.end_at).toISOString() } : {}),
+        ...(event.ends_at ? { end: new Date(event.ends_at).toISOString() } : {}),
       },
       ticketType: {
         defaultValue: { language: 'en-US', value: tier.name },
