@@ -1,4 +1,4 @@
-import { auth0 } from "@/lib/auth0";
+import { getSafeSession } from "@/lib/auth0";
 import { getUserByAuth0Id } from "@/lib/data";
 import { getInitials } from "@/lib/utils";
 import { redirect } from "next/navigation";
@@ -50,7 +50,7 @@ function RoleGateScreen({
 }
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth0.getSession();
+  const session = await getSafeSession();
   if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
   const user = await getUserByAuth0Id(session.user.sub);

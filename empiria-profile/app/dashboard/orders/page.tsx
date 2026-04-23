@@ -1,4 +1,4 @@
-import { auth0 } from "@/lib/auth0";
+import { getSafeSession } from "@/lib/auth0";
 import { getUserOrders } from "@/lib/data";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { redirect } from "next/navigation";
@@ -12,7 +12,7 @@ const statusStyles: Record<string, string> = {
 };
 
 export default async function OrdersPage() {
-  const session = await auth0.getSession();
+  const session = await getSafeSession();
   if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
   const orders = await getUserOrders(session.user.sub);

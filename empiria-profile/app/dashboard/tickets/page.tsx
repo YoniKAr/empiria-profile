@@ -1,4 +1,4 @@
-import { auth0 } from "@/lib/auth0";
+import { getSafeSession } from "@/lib/auth0";
 import { getUserTickets } from "@/lib/data";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { generateQRCodeDataURL } from "@/lib/qrcode";
@@ -22,7 +22,7 @@ function isUpcoming(ticket: any): boolean {
 }
 
 export default async function TicketsPage() {
-  const session = await auth0.getSession();
+  const session = await getSafeSession();
   if (!session?.user?.sub) redirect("/auth/login?screen_hint=signup");
 
   const tickets = await getUserTickets(session.user.sub);

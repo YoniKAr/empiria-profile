@@ -1,6 +1,6 @@
 "use server";
 
-import { auth0 } from "@/lib/auth0";
+import { getSafeSession } from "@/lib/auth0";
 import { getSupabaseAdminUntyped } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 
@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
  * Get the current user's auth0_id from the session.
  */
 async function getAuth0Id(): Promise<string> {
-  const session = await auth0.getSession();
+  const session = await getSafeSession();
   if (!session?.user?.sub) throw new Error("Not authenticated");
   return session.user.sub;
 }
@@ -36,7 +36,7 @@ export async function updateProfile(formData: FormData) {
  * Send a password-change email via Auth0 (only for email/password users).
  */
 export async function changePassword() {
-  const session = await auth0.getSession();
+  const session = await getSafeSession();
   if (!session?.user?.sub) throw new Error("Not authenticated");
 
   const email = session.user.email;

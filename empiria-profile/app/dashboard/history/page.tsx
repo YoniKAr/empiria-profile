@@ -1,4 +1,4 @@
-import { auth0 } from "@/lib/auth0";
+import { getSafeSession } from "@/lib/auth0";
 import { getUserByAuth0Id, getUserTickets } from "@/lib/data";
 import { redirect } from "next/navigation";
 import { formatCurrency } from "@/lib/utils";
@@ -16,7 +16,7 @@ function formatTime(dateStr: string) {
 }
 
 export default async function HistoryPage() {
-    const session = await auth0.getSession();
+    const session = await getSafeSession();
     if (!session?.user?.sub) redirect("/auth/login");
 
     const user = await getUserByAuth0Id(session.user.sub);
