@@ -51,7 +51,7 @@ export type Database = {
           location_lng: number | null;
           city: string | null;
           status: "draft" | "published" | "cancelled" | "completed";
-          seating_type: "general_admission" | "reserved";
+          seating_type: "general_admission" | "assigned_seating" | "zone_admission" | "zone_map" | "seat_map";
           seating_config: Json;
           is_featured: boolean;
           platform_fee_percent: number;

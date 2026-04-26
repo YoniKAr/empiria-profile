@@ -4,6 +4,8 @@ import { formatDate, formatCurrency } from "@/lib/utils";
 import { generateQRCodeDataURL } from "@/lib/qrcode";
 import { redirect } from "next/navigation";
 import { Ticket, Calendar, MapPin } from "lucide-react";
+import MiniSeatmap from "@/components/MiniSeatmap";
+import type { SeatingConfig, SeatingMode } from "@/lib/seatmap-types";
 
 const statusStyles: Record<string, { bg: string; label: string }> = {
   valid: { bg: "bg-emerald-50 text-emerald-700", label: "Valid" },
@@ -19,6 +21,21 @@ function isUpcoming(ticket: any): boolean {
   if (occ.ends_at) return new Date(occ.ends_at) > now;
   if (occ.starts_at) return new Date(occ.starts_at) > now;
   return false;
+}
+
+/**
+ * Derive the zone name for a ticket based on matching the ticket's tier_id
+ * against the zones defined in the event's seating_config.
+ */
+function getZoneNameForTier(
+  seatingConfig: SeatingConfig | null,
+  tierId: string | null
+): string | null {
+  if (!seatingConfig?.zones || !tierId) return null;
+  for (const zone of seatingConfig.zones) {
+    if (zone.tier_id === tierId) return zone.name;
+  }
+  return null;
 }
 
 export default async function TicketsPage() {
@@ -115,6 +132,16 @@ function TicketCard({
     label: ticket.status,
   };
 
+  const seatingType: SeatingMode | null = event?.seating_type ?? null;
+  const seatingConfig: SeatingConfig | null =
+    event?.seating_config && typeof event.seating_config === "object"
+      ? (event.seating_config as SeatingConfig)
+      : null;
+
+  // Determine what seat/zone visualization to show
+  const seatLabel: string | null = ticket.seat_label ?? null;
+  const zoneName = getZoneNameForTier(seatingConfig, tier?.id ?? null);
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5">
       {/* Event image + info */}
@@ -155,17 +182,33 @@ function TicketCard({
             {tier.name}
           </span>
         )}
-        {ticket.seat_label && (
-          <span className="text-xs text-gray-500">
-            Seat: {ticket.seat_label}
-          </span>
-        )}
+
+        {/* Seat / Zone badge — varies by seating_type */}
+        <SeatZoneBadge
+          seatingType={seatingType}
+          seatLabel={seatLabel}
+          zoneName={zoneName}
+        />
+
         <span
           className={`ml-auto rounded-full px-2.5 py-0.5 text-xs font-medium ${status.bg}`}
         >
           {status.label}
         </span>
       </div>
+
+      {/* Mini seatmap for zone_map / seat_map */}
+      {(seatingType === "zone_map" || seatingType === "seat_map") &&
+        seatingConfig &&
+        seatLabel && (
+          <div className="mt-3">
+            <MiniSeatmap
+              seatingConfig={seatingConfig}
+              seatingType={seatingType}
+              seatLabel={seatLabel}
+            />
+          </div>
+        )}
 
       {/* QR Code */}
       {qrDataUrl && (
@@ -214,4 +257,56 @@ function TicketCard({
       </div>
     </div>
   );
+}
+
+/**
+ * Renders the appropriate seat/zone badge based on seating type.
+ * - assigned_seating: "Seat: A5" pill
+ * - zone_admission: "Zone: VIP Area" pill
+ * - zone_map / seat_map: handled by MiniSeatmap above, so just show a text label here
+ * - general_admission: nothing
+ */
+function SeatZoneBadge({
+  seatingType,
+  seatLabel,
+  zoneName,
+}: {
+  seatingType: SeatingMode | null;
+  seatLabel: string | null;
+  zoneName: string | null;
+}) {
+  if (seatingType === "assigned_seating" && seatLabel) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
+        Seat: {seatLabel}
+      </span>
+    );
+  }
+
+  if (seatingType === "zone_admission" && zoneName) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-md bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700">
+        Zone: {zoneName}
+      </span>
+    );
+  }
+
+  if (seatingType === "seat_map" && seatLabel) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
+        Seat: {seatLabel}
+      </span>
+    );
+  }
+
+  if (seatingType === "zone_map" && seatLabel) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-md bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700">
+        Zone: {seatLabel}
+      </span>
+    );
+  }
+
+  // general_admission or no info — show nothing
+  return null;
 }

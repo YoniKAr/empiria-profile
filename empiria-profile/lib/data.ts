@@ -30,7 +30,8 @@ export async function getUserTickets(auth0Id: string) {
       *,
       event:events!tickets_event_id_fkey (
         id, title, slug, cover_image_url,
-        venue_name, address_text, city, status, location_type, currency
+        venue_name, address_text, city, status, location_type, currency,
+        seating_type, seating_config
       ),
       occurrence:event_occurrences!tickets_occurrence_id_fkey (
         id, starts_at, ends_at, label
