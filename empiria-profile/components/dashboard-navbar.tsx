@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Bell, X, ArrowRight, Calendar, MapPin, User, LayoutDashboard } from "lucide-react";
+import { Search, Bell, X, ArrowRight, Calendar, MapPin, User, LayoutDashboard, LogOut, Settings, ChevronDown } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,8 +61,10 @@ export function DashboardNavbar({ searchQuery, onSearchChange, avatarUrl }: Dash
     const router = useRouter();
     const [searchOpen, setSearchOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const avatarMenuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (searchOpen && inputRef.current) {
@@ -76,8 +78,11 @@ export function DashboardNavbar({ searchQuery, onSearchChange, avatarUrl }: Dash
             if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
                 handleClose();
             }
+            if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target as Node)) {
+                setAvatarMenuOpen(false);
+            }
         }
-        if (searchOpen) {
+        if (searchOpen || avatarMenuOpen) {
             document.addEventListener("mousedown", handleClickOutside);
         }
         return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -255,12 +260,39 @@ export function DashboardNavbar({ searchQuery, onSearchChange, avatarUrl }: Dash
                     <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-empiria-orange" />
                     <span className="sr-only">Notifications</span>
                 </Button>
-                <Link href="/dashboard/settings">
-                    <Avatar className="size-9 cursor-pointer ring-2 ring-border">
-                        {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
-                        <AvatarFallback>Me</AvatarFallback>
-                    </Avatar>
-                </Link>
+                <div className="relative" ref={avatarMenuRef}>
+                    <button
+                        onClick={() => setAvatarMenuOpen((v) => !v)}
+                        className="flex items-center gap-1 rounded-full focus:outline-none"
+                    >
+                        <Avatar className="size-9 cursor-pointer ring-2 ring-border">
+                            {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
+                            <AvatarFallback>Me</AvatarFallback>
+                        </Avatar>
+                        <ChevronDown className={`size-3.5 text-muted-foreground transition-transform ${avatarMenuOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    {avatarMenuOpen && (
+                        <div className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-border bg-card py-1 shadow-lg">
+                            <Link
+                                href="/dashboard/settings"
+                                onClick={() => setAvatarMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors"
+                            >
+                                <Settings className="size-4 text-muted-foreground" />
+                                Settings
+                            </Link>
+                            <div className="border-t border-border" />
+                            <a
+                                href="/auth/logout"
+                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                            >
+                                <LogOut className="size-4" />
+                                Sign Out
+                            </a>
+                        </div>
+                    )}
+                </div>
             </div>
         </header>
     );
